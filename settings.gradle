@@ -1,0 +1,3 @@
+include ':apilib'
+include ':app'
+rootProject.name = "Protocol Buffer Test"

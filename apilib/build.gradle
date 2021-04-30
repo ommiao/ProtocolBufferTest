@@ -1,0 +1,57 @@
+plugins {
+    id 'java-library'
+    id 'kotlin'
+}
+apply plugin: 'com.google.protobuf'
+
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    sourceSets {
+        main {
+            proto {
+                srcDir 'src/main/proto'
+                include '**/*.proto'
+            }
+            java {
+                srcDir 'src/main/java'
+            }
+        }
+    }
+
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+    plugins {
+        javalite {
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+    }
+    // this is a task which wil generate classes for our proto files
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.plugins {
+                javalite {}
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    //protocol buffer
+    api 'com.google.protobuf:protobuf-lite:3.0.0'
+
+    //retrofit
+    implementation ('com.squareup.retrofit2:converter-protobuf:2.9.0') {
+        exclude group: 'com.google.protobuf'
+    }
+}
